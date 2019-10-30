@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pdb
-
+### testtttttt
 '''
     padding: 'SAME'(conv, pool)
     dropout: conv, fc1
