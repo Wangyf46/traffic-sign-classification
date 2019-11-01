@@ -55,8 +55,7 @@ def preprocess(img_path, category_id=None, aug=False):
     if category_id is not None:
         label = np.eye(len(CLASS))[category_id]
 
-    img = img.reshape(img.shape + (1,))
-
+    img = img.reshape(img.shape + (1,)).transpose((2,0,1)).astype(np.float32)
     # if aug:
     #     img = extra_aug(img)
 

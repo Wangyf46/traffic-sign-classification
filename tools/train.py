@@ -12,11 +12,9 @@ from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
 from config import cfg
-from src.speedlimit import speedlimit
-# from lib.loss.loss import *
 from src.utils import *
-# from lib.localdimming.common import *
-
+from src.speedlimit import speedlimit
+from src.model import LeNet5
 
 def parse_args():
     parser = argparse.ArgumentParser(description='MMDet test detector')
@@ -37,7 +35,7 @@ def parse_args():
     return args
 
 
-def train_net(cfg, net=None):
+def train_net(cfg, net):
     tblogger = SummaryWriter(cfg.TRAIN_LOG_DIR)
     log_file = open(cfg.LOG_FILE, 'w')
 
@@ -48,7 +46,7 @@ def train_net(cfg, net=None):
                               shuffle=True,
                               num_workers=4,
                               pin_memory=True)
-    '''
+
     ## TODO
     optimizer = optim.Adam(net.parameters(),
                            lr=cfg.TRAIN_LR,
@@ -56,28 +54,27 @@ def train_net(cfg, net=None):
                            eps=1e-08)
 
     ## TODO
-    criterion = nn.MSELoss(size_average=True)
-    '''
+    criterion = nn.CrossEntropyLoss(size_average=True).cuda()
+
 
     itr = 0
     max_itr = cfg.TRAIN_EPOCHS * len(train_loader)
     print(itr, max_itr, len(train_loader))
-    # net.train()
+    net.train()
     for epoch in range(cfg.TRAIN_EPOCHS):
         print('Starting epoch {}/{}.'.format(epoch + 1, cfg.TRAIN_EPOCHS))
         data_time = AverageMeter()
         batch_time = AverageMeter()
         losses = AverageMeter()
         end = time.time()
-        pdb.set_trace()
-        for  i_batch, img, category_id, image_id in enumerate(train_loader):
-            pdb.set_trace()
+        for i_batch, blob in enumerate(train_loader):
             data_time.update(time.time() - end)                 # measure batch_size data loading time
             now_lr = adjust_lr(optimizer, epoch, cfg.TRAIN_LR)  ## TODO
-
-            ## todo
-            Iouts = net(Iins)
-            loss = criterion(Iins, Iouts)
+            # Iin = blob['image'].type(torch.FloatTensor).cuda()
+            Iin = blob['image'].cuda()
+            pred = net(Iin)
+            # loss = criterion(pred, blob['label'].squeeze().cuda())
+            loss = criterion(pred, blob['label'].type(torch.LongTensor).cuda())
             losses.update(loss.item(), cfg.TRAIN_BZ)
             optimizer.zero_grad()
             loss.backward()
@@ -97,36 +94,34 @@ def train_net(cfg, net=None):
 
             end = time.time()
             itr += 1
-        save_path = os.path.join(cfg.TRAIN_CKPT_DIR, '%s_itr%d.pth' % (epoch, itr))
+        save_path = os.path.join(cfg.WORK_DIR, '%s_itr%d.pth' % (epoch, itr))
         torch.save(net.state_dict(), save_path)
         print('%s has been saved' % save_path)
 
 
 if __name__ == '__main__':
 
-    seed = time.time()
-    torch.manual_seed(0)
-    torch.cuda.manual_seed(0)
+    # seed = time.time()
+    # torch.manual_seed(0)
+    # torch.cuda.manual_seed(0)
+    #
+    # torch.backends.cudnn.benchmark = True
+    # torch.backends.cudnn.deterministic = False
+    # torch.backends.cudnn.enabled = True
 
-    torch.backends.cudnn.benchmark = True
-    torch.backends.cudnn.deterministic = False
-    torch.backends.cudnn.enabled = True
-
-    train_net(cfg)
-
-    model = EDSR(1, 1)  ##TODO
+    model = LeNet5(1, 18)  ##TODO
 
     if cfg.TRAIN_CKPT:
-        net.load_state_dict(torch.load(cfg.TRAIN_CKPT))
+        model.load_state_dict(torch.load(cfg.TRAIN_CKPT))
         print('Model loaded from {}'.format(cfg.TRAIN_CKPT))
     if cfg.GPU:
         os.environ['CUDA_VISILBE_DEVICES'] = cfg.GPU_ID
         model = nn.DataParallel(model)    ## dist train
         model = model.cuda()
     try:
-        train_net(cfg, net)
+        train_net(cfg, model)
     except KeyboardInterrupt:
-        torch.save(net.state_dict(), cfg.EXP + 'INTERRUPTED.pth')   ##TODO
+        torch.save(model.state_dict(), cfg.WORK_DIR + '/' + 'INTERRUPTED.pth')   ##TODO
         print('Saved interrupt')
         try:
             sys.exit(0)

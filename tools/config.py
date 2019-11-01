@@ -6,7 +6,7 @@ import torch
 
 class Configuration():
     def __init__(self):
-        self.PERIOD = 'train'
+        self.PERIOD = 'val'
 
         self.DATE = time.strftime("%Y%m%d%_H%M%S_ubuntu", time.localtime())
         self.WORK_DIR = os.path.join('/data/workspace/speed-limit/workout/', self.DATE)
@@ -16,7 +16,7 @@ class Configuration():
         self.DATA_AUG = True
 
         self.GPU = True
-        self.GPU_ID = '2'
+        self.GPU_ID = '0,1,2,3'
 
         self.LOSS = None  ##   todo
         self.OPTIM = None ##   todo
@@ -24,15 +24,21 @@ class Configuration():
 
         self.TRAIN_SET = self.DATA_PATH + self.PERIOD
         self.TRAIN_LR = 0.0001
-        self.TRAIN_BZ = 128
-        self.TRAIN_EPOCHS = 100
+        self.TRAIN_BZ = 512
+        self.TRAIN_EPOCHS = 150
         self.TRAIN_CKPT = ''
         self.TRAIN_LOG_DIR = os.path.join(self.WORK_DIR, 'tf_logs')
 
         self.TEST_SET = self.DATA_PATH + self.PERIOD
         self.TEST_BZ = 1
-        self.TEST_CKPT = ''
-        self.OUTPUT = self.WORK_DIR + 'epoch21.pkl'
+
+        ## 18 class
+        self.TEST_CKPT = '/data/workspace/speed-limit/workout/20191031183744_ubuntu/99_itr19300.pth'
+        self.RESULT = '/data/workspace/speed-limit/workout/20191031183744_ubuntu/' + 'result_99.txt'
+
+        ## 16 class
+        # self.TEST_CKPT ='/data/workspace/speed-limit/workout/20191101110646_ubuntu/100_itr9797.pth'
+        # self.RESULT = '/data/workspace/speed-limit/workout/20191031183744_ubuntu/' + 'result_100.txt'
 
         self.__check()
         self.__add_path('/home/wyf/codes/traffic-signs-classification/')
@@ -40,13 +46,12 @@ class Configuration():
     def __check(self):
         if not torch.cuda.is_available():
             raise ValueError('config.py: cuda is not available')
-        if not os.path.isdir(self.WORK_DIR):
-            os.makedirs((self.WORK_DIR))
         if self.PERIOD == 'train':
-            self.LOG_FILE = self.WORK_DIR + self.DATE + '.txt'
+            self.LOG_FILE = self.WORK_DIR + '/' + self.DATE + '.txt'
+            if not os.path.isdir(self.WORK_DIR):
+                os.makedirs((self.WORK_DIR))
             if not os.path.isdir(self.TRAIN_LOG_DIR):
                 os.makedirs((self.TRAIN_LOG_DIR))
-
 
     def __add_path(self, path):
         if path not in sys.path:

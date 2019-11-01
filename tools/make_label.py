@@ -5,6 +5,7 @@ import pdb
 import cv2
 import json
 import argparse
+import numpy as np
 from tqdm import tqdm
 
 
@@ -80,11 +81,43 @@ class get_json(object):
         with open(self.save_file, 'w') as fjson:
             json.dump(self.m_json_dict, fjson)
 
+def generate_data_dist(args):
+    with open(args.txtfile, 'r') as fsets:
+        name_list = list(map(lambda x: x.strip(), fsets.readlines()))
+    with open(args.jsonfile, 'r') as f:
+        data = json.load(f)
+        images = data['images']
+        annotations = data['annotations']
+    with open(args.cpath, 'r') as fcat:
+        cats = fcat.readlines()
+        cats = list(map(lambda x: x.strip(), cats))
+
+    label = np.zeros(18)
+    ratio = np.zeros(18)
+    for idx in range(len(name_list)):
+        fname = images[idx]['file_name']
+        image_id = annotations[idx]['image_id']
+        category_id = annotations[idx]['category_id']
+        label[category_id] += 1
+    print('***************dist: ********************')
+    print('{:<8}{:<15}{:<15}{:<8}'.format('idx', 'category', 'count', 'ratio'))
+    print('----------------------------------------')
+    ratio = label / np.sum(label)
+    for idx in range(18):
+        print('{:<8}{:<15}{:<15}{:<8}'.format(str([idx]), cats[idx],  int(label[idx]), round(ratio[idx], 4)))
+    print('----------------------------------------')
+    print('{:<8}{:<15}{:<15}{:<8}'.format('', 'total', int(np.sum(label)), 1.0))
+
 if __name__ == '__main__':
     args = parse_args()
+
     # get_txt(args)
-    speedlimit = get_json(args)
-    speedlimit.convert()
+
+    # speedlimit = get_json(args)
+    # speedlimit.convert()
+
+    generate_data_dist(args)
+
 
 
 

@@ -1,10 +1,12 @@
 import pdb
+import torch
 import cv2
 import json
 import warnings
 
 from torch.utils.data import Dataset
 
+from src.utils import *
 
 class speedlimit(Dataset):
     def __init__(self, cfg):
@@ -37,7 +39,9 @@ class speedlimit(Dataset):
         blob = {}
         blob['image'] = img
         blob['fname'] = fname
-        blob['label'] = label
+        if category_id == 15 or category_id == 16 or category_id == 17:
+            category_id =15
+        blob['label'] = category_id
         blob['image_id'] = image_id
         return blob
 
@@ -46,7 +50,6 @@ class speedlimit(Dataset):
 if __name__ == '__main__':
     from torch.utils.data import DataLoader
     from config import cfg
-    from src.utils import *
 
     listDataset = speedlimit(cfg)
     # loader = DataLoader(listDataset,

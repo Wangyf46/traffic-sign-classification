@@ -1,16 +1,13 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import pdb
-### testtttttt
+
 '''
     padding: 'SAME'(conv, pool)
-    dropout: conv, fc1
-    init: 
-    softmax
+    dropout: conv(pool), fc1
+    init: Xavier
+    softmax: 
     BN:
-    LOSS
-    l2 Re
     
 '''
 
@@ -18,24 +15,22 @@ class LeNet5(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(LeNet5, self).__init__()
         self.block1 = conv(in_channels, 32, 2, 0.9)
-
         self.block2 = conv(32, 64, 2, 0.8)
         self.block3 = conv(64, 128, 2, 0.7)
 
         # 1st stage output
-        self.pool1 = nn.MaxPool2d(kernel_size=4, stride=4, padding='SAME')
+        self.pool1 = nn.MaxPool2d(kernel_size=4, stride=4)
 
         # 2st stage output
-        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2, padding='SAME')
-
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.fc1 = nn.Sequential(nn.Linear(3584, 1024),
-                                nn.BatchNorm2d(1024),
-                                nn.ReLU(inplace=True),
-                                nn.Dropout(0.5, training=self.training))
+                                # nn.ReLU(inplace=True),
+                                 nn.ReLU(),
+                                 nn.Dropout(0.5, self.training))   ##TODO
 
-        self.fc2 = nn.Sequential(nn.Linear(1024, 18),
-                                nn.BatchNorm2d(18),   ## TODO
-                                nn.Softmax())
+
+        self.fc2 = nn.Sequential(nn.Linear(1024, out_channels),
+                                 nn.Softmax(dim=1))
 
         ## Vavier initialized method
         for m in self.modules():
@@ -55,8 +50,7 @@ class LeNet5(nn.Module):
                     nn.init.constant_(m.bias, 0)
 
 
-
-    def forward(self, *input):
+    def forward(self, input):
         block1_out = self.block1(input)
         block2_out = self.block2(block1_out)
         block3_out = self.block3(block2_out)
@@ -77,15 +71,24 @@ class LeNet5(nn.Module):
 
 
 class conv(nn.Module):
-    def __init__(self, in_channels, out_channels, ksize, p):
+    def __init__(self, in_channels, out_channels, ksize, param):
         super(conv, self).__init__()
         self.layer = nn.Sequential(nn.Conv2d(in_channels, out_channels, kernel_size=5, stride=1, padding=2),
                                    nn.BatchNorm2d(out_channels),
-                                   nn.ReLU(inplace=True),
-                                   nn.MaxPool2d(kernel_size=ksize, stride=ksize, padding='SAME'),
-                                   nn.Dropout(p, training=self.training))
+                                   # nn.ReLU(inplace=True),
+                                   nn.ReLU(),
+                                   nn.MaxPool2d(kernel_size=ksize, stride=ksize),
+                                   nn.Dropout(param, self.training))    ##TODO
 
-    def forward(self, *input):
+    def forward(self, input):
         out = self.layer(input)
-
         return out
+
+
+if __name__ == '__main__':
+    input = torch.rand(2, 1, 32, 32).cuda()
+    # input = torch.ones(1, 1, 32, 32).cuda()
+    speedlimit = LeNet5(1, 18).cuda()
+    speedlimit.eval()
+    output = speedlimit(input)
+    print(output)
