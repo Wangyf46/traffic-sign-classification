@@ -12,10 +12,11 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
-from config import cfg
+from config_LeNet5src import cfg
 from src.utils import *
 from src.speedlimit import speedlimit
-from src.LeNet5 import LeNet5
+from src.LeNet5_src import LeNet5_src
+
 
 def test(args, cfg, net):
     result_file = open(cfg.RESULT, 'w')
@@ -27,8 +28,11 @@ def test(args, cfg, net):
                              pin_memory=True)
 
     net.eval()
+    right_idx = 0
+    itr = 0
     TP = np.zeros(18)
     T = np.zeros(18)
+    RECALL = np.zeros(18)
     for i_batch, blob in enumerate(test_loader):
         if args.vis:
             img = blob['image'].squeeze(0).numpy().transpose((1,2,0))
@@ -82,19 +86,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-
-    if cfg.MODEL == 'LeNet5':
-        from src.LeNet5 import LeNet5
-        model = LeNet5(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
-    elif cfg.MODEL == 'VggNet':
-        from src.vgg import VggNet
-        model = VggNet(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
-    elif cfg.MODEL == 'LeNet5src':
-        from src.LeNet5_src import LeNet5_src
-        model = LeNet5_src(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
-    else:
-        pass
-
+    model = LeNet5_src(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
     model = nn.DataParallel(model)  ## dist train
     model = model.cuda()
 

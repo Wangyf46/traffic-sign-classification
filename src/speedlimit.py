@@ -9,9 +9,9 @@ from torch.utils.data import Dataset
 from src.utils import *
 
 class speedlimit(Dataset):
-    def __init__(self, cfg):
+    def __init__(self, args, cfg):
         self.cfg = cfg
-        if cfg.PERIOD == 'train':
+        if args.period == 'trainval':
             self.img_file = cfg.TRAIN_SET + '.txt'
             self.ann_file = cfg.TRAIN_SET + '.json'
         else:
@@ -30,8 +30,6 @@ class speedlimit(Dataset):
 
     ## TODO
     def __getitem__(self, idx):
-        # print(idx)    ## TODO
-
         fname = self.images[idx]['file_name']
         category_id = self.annotations[idx]['category_id']
         image_id = self.annotations[idx]['image_id']
@@ -39,8 +37,6 @@ class speedlimit(Dataset):
         blob = {}
         blob['image'] = img
         blob['fname'] = fname
-        if category_id == 15 or category_id == 16 or category_id == 17:
-            category_id =15
         blob['label'] = category_id
         blob['image_id'] = image_id
         return blob

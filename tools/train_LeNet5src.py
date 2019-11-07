@@ -3,7 +3,6 @@ sys.path.append('./')
 
 import os
 import time
-import shutil
 import pdb
 import argparse
 import torch
@@ -12,16 +11,18 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
-from config import cfg
+from config_LeNet5src import cfg
 from src.utils import *
 from src.speedlimit import speedlimit
+from src.LeNet5_src import LeNet5_src
+
 
 
 def train_net(args, cfg, net):
     tblogger = SummaryWriter(cfg.TRAIN_LOG_DIR)
     log_file = open(cfg.LOG_FILE, 'w')
 
-    record_srt = 'Classes'.format(args.classes)
+    record_srt = 'Softmax: {:<8}, Train_set: {:<8}, Classes: {:<8}  VggNet-nondropout'.format(cfg.SOFTMAX,cfg.TRAIN_SET, args.classes)
     log_print(record_srt, log_file)
 
     listDataset = speedlimit(args, cfg)                      ## TODO
@@ -89,8 +90,6 @@ def parse_args():
                         help='run mode')
     parser.add_argument('classes', type=int,
                         help='samples classes')
-    parser.add_argument('config', type=str,
-                        help='config file')
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -110,21 +109,7 @@ if __name__ == '__main__':
         if not os.path.isdir(cfg.TRAIN_LOG_DIR):
             os.makedirs((cfg.TRAIN_LOG_DIR))
 
-    dstfile = cfg.WORK_DIR + '/config.py'
-    shutil.copyfile(args.config, dstfile)
-
-    if cfg.MODEL == 'LeNet5':
-        from src.LeNet5 import LeNet5
-        model = LeNet5(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
-    elif cfg.MODEL == 'VggNet':
-        from src.vgg import VggNet
-        model = VggNet(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
-    elif cfg.MODEL == 'LeNet5src':
-        from src.LeNet5_src import LeNet5_src
-        model = LeNet5_src(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
-    else:
-        pass
-
+    model = LeNet5_src(1, args.classes, cfg.SOFTMAX, cfg.DROPOUT)
 
     if cfg.TRAIN_CKPT:
         model.load_state_dict(torch.load(cfg.TRAIN_CKPT))
