@@ -33,13 +33,13 @@ class Configuration():
 
 
         ## TODO-11.6: 18 + nonsoftmax + dropout + VggNet
-        self.MODEL = 'VggNet'
-        self.SOFTMAX = False
-        self.DROPOUT = True
-        self.TRAIN_SET = self.DATA_PATH + 'trainval'
-        self.TEST_SET = self.DATA_PATH + 'test'
-        self.TEST_CKPT = '/data/workspace/speed-limit/workout/VggNet/20191105223718_ubuntu/99_itr7800.pth'
-        self.RESULT = '/data/workspace/speed-limit/workout/VggNet/20191105223718_ubuntu/result_99_nonsoftmax_18_dropout111.txt'
+        # self.MODEL = 'VggNet'
+        # self.SOFTMAX = False
+        # self.DROPOUT = True
+        # self.TRAIN_SET = self.DATA_PATH + 'trainval'
+        # self.TEST_SET = self.DATA_PATH + 'test'
+        # self.TEST_CKPT = '/data/workspace/speed-limit/workout/VggNet/20191105223718_ubuntu/99_itr7800.pth'
+        # self.RESULT = '/data/workspace/speed-limit/workout/VggNet/20191105223718_ubuntu/result_99_nonsoftmax_18_dropout111.txt'
 
 
         ## TODO-11.5: 18 + nonsoftmax + nondropout + LeNet5(best)
@@ -86,13 +86,18 @@ class Configuration():
 
 
         ## TODO-11.5: 15 + nonsoftmax + nondropout + LeNet5 (best)
-        # self.MODEL = 'LeNet5'
-        # self.SOFTMAX = False
-        # self.DROPOUT = False
-        # self.TRAIN_SET = self.DATA_PATH + 'Non-Negative/trainval'
-        # self.TEST_SET = self.DATA_PATH + 'Non-Negative/test'
-        # self.TEST_CKPT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/88_itr5251.pth'
-        # self.RESULT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/result_88_nonsoftmax_15_nondropout.txt'
+        self.MODEL = 'LeNet5'
+        self.SOFTMAX = False
+        self.DROPOUT = False
+        self.TRAIN_SET = self.DATA_PATH + 'Non-Negative/trainval'
+        self.TEST_SET = self.DATA_PATH + 'Non-Negative/test'
+        self.TEST_CKPT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/88_itr5251.pth'
+        self.RESULT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/1result_88_nonsoftmax_15_nondropout.txt'
+
+        # self.TEST_SET = '/data/workspace/speed-limit-crop/test'
+        # self.RESULT = '/data/workspace/speed-limit-crop/result_15.txt'
+
+
 
 
         ## TODO-11.5: 15 + softmax + nondropout + LeNet5

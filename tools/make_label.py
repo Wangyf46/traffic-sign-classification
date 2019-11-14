@@ -80,7 +80,6 @@ def get_txt(args):
             fw.write(img_path + '\n')
             # print(img_path, idx)
             idx = idx + 1
-    print(idx-1)
     # print("has read all files")
 
 
@@ -170,11 +169,12 @@ if __name__ == '__main__':
     # rename()
 
     # splitsample(args)
-    # get_txt(args)
 
-    # speedlimit = get_json(args)
-    # speedlimit.convert()
-    #
+    get_txt(args)
+
+    speedlimit = get_json(args)
+    speedlimit.convert()
+
     generate_data_dist(args)
 
 

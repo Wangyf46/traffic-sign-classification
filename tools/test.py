@@ -12,10 +12,12 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 
-from config import cfg
+from tools.config import cfg
 from src.utils import *
 from src.speedlimit import speedlimit
 from src.LeNet5 import LeNet5
+
+
 
 def test(args, cfg, net):
     result_file = open(cfg.RESULT, 'w')
