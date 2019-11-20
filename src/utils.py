@@ -1,4 +1,6 @@
 import cv2
+import torch
+import torchvision
 import numpy as np
 from skimage import exposure
 from termcolor import cprint
@@ -48,6 +50,10 @@ def log_print(text, log_file, color = None, on_color = None, attrs = None):
 def preprocess(img_path, category_id=None, aug=False):
     img = cv2.imread(img_path, 0)
     img = cv2.resize(img, (32, 32))
+
+    # if aug:
+    #     img = extra_aug(img)
+
     img = (img / 255.).astype(np.float32)
     img = exposure.equalize_adapthist(img)
 
@@ -57,8 +63,15 @@ def preprocess(img_path, category_id=None, aug=False):
 
     img = img.reshape(img.shape + (1,)).transpose((2,0,1)).astype(np.float32)
 
-    # if aug:
-    #     img = extra_aug(img)
-
     return img, category_id
 
+
+def extra_aug(img):
+    noise = np.random.randint(5, size=(164, 278, 4), dtype='uint8')
+
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            if img[i][j] != 255:
+                img[i][j] += noise[i][j]
+
+    return img

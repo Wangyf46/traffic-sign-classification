@@ -55,7 +55,7 @@ def splitsample(args):
     print("has read all files")
     img_files_set = set(img_files)
     allfiles = list(img_files_set)    # set to list
-    test_file = random.sample(allfiles, math.ceil(len(allfiles) * 0.3))  # 随机抽选
+    test_file = random.sample(allfiles, math.ceil(len(allfiles) * 0.3))  # 随机抽选 0.3
     test_file_set = set(test_file)
     trainval_file_set = img_files_set - test_file_set
     # val_file = random.sample(trainval_file_set, math.ceil(len(allfiles) * 0.2))
@@ -70,6 +70,7 @@ def splitsample(args):
     with open(args.dstpath + 'test.txt', 'a') as fw3:
         for name in test_file_set:
             fw3.write(args.srcpath + name + '\n')
+    print(args.srcpath)
 
 def get_txt(args):
     with open(args.txtfile,'a') as fw: ## w
@@ -170,7 +171,7 @@ if __name__ == '__main__':
 
     # splitsample(args)
 
-    get_txt(args)
+    # get_txt(args)
 
     speedlimit = get_json(args)
     speedlimit.convert()

@@ -8,7 +8,7 @@ import shutil
 class Configuration():
     def __init__(self):
         self.DATA_NAME = 'speedlimit'
-        self.DATA_PATH = '/data/workspace/speed-limit/'
+        self.DATA_PATH = '/data/workspace/speed-limit-mixed-1/'
         self.DATA_AUG = True
 
 
@@ -51,6 +51,15 @@ class Configuration():
         # self.TEST_CKPT = '/data/workspace/speed-limit/workout/LeNet5/20191105144413_ubuntu/99_itr7800.pth'
         # self.RESULT = '/data/workspace/speed-limit/workout/LeNet5/20191105144413_ubuntu/result_99_nonsoftmax_18_nondropout.txt'
 
+        ## TODO-11.18(mixed-1): 18 + nonsoftmax + nondropout + LeNet5(best)
+        self.MODEL = 'LeNet5'
+        self.SOFTMAX = False
+        self.DROPOUT = False
+        self.TRAIN_SET = self.DATA_PATH + 'trainval'
+        self.TEST_SET = self.DATA_PATH + 'test'
+        self.TEST_CKPT = '/data/workspace/speed-limit-mixed-1/workout-aug/LeNet5/20191118163803_ubuntu/99_itr7500.pth'
+        self.RESULT = '/data/workspace/speed-limit-mixed-1/workout-aug/LeNet5/20191118163803_ubuntu/99_result.txt'
+
 
         ## TODO-11.4: 18 + softmax + dropout + LeNet5
         # self.MODEL = 'LeNet5'
@@ -85,14 +94,15 @@ class Configuration():
         # self.RESULT = '/data/workspace/speed-limit/workout/LeNet5/20191105215643_ubuntu/result_99_nonsoftmax_dropout_15.txt'
 
 
-        ## TODO-11.5: 15 + nonsoftmax + nondropout + LeNet5 (best)
-        self.MODEL = 'LeNet5'
-        self.SOFTMAX = False
-        self.DROPOUT = False
-        self.TRAIN_SET = self.DATA_PATH + 'Non-Negative/trainval'
-        self.TEST_SET = self.DATA_PATH + 'Non-Negative/test'
-        self.TEST_CKPT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/88_itr5251.pth'
-        self.RESULT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/1result_88_nonsoftmax_15_nondropout.txt'
+        # ## TODO-11.5: 15 + nonsoftmax + nondropout + LeNet5 (best)
+        # self.MODEL = 'LeNet5'
+        # self.SOFTMAX = False
+        # self.DROPOUT = False
+        # self.TRAIN_SET = self.DATA_PATH + 'Non-Negative/trainval'
+        # # self.TEST_SET = self.DATA_PATH + 'Non-Negative/test'
+        # self.TEST_CKPT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/88_itr5251.pth'
+        # # self.RESULT = '/data/workspace/speed-limit/workout/LeNet5/20191105115627_ubuntu/1result_88_nonsoftmax_15_nondropout.txt'
+
 
         # self.TEST_SET = '/data/workspace/speed-limit-crop/test'
         # self.RESULT = '/data/workspace/speed-limit-crop/result_15.txt'
@@ -141,7 +151,7 @@ class Configuration():
 
 
         self.DATE = time.strftime("%Y%m%d%_H%M%S_ubuntu", time.localtime())
-        self.WORK_DIR = os.path.join('/data/workspace/speed-limit/workout/', self.MODEL, self.DATE)
+        self.WORK_DIR = os.path.join('/data/workspace/speed-limit-mixed-1/workout-aug/', self.MODEL, self.DATE)
 
         self.GPU = True
         self.GPU_ID = '1,2,3,4'
@@ -151,7 +161,7 @@ class Configuration():
         self.LR = None    ##   todo
 
         self.TRAIN_LR = 0.0001
-        self.TRAIN_BZ = 480
+        self.TRAIN_BZ = 512
         self.TRAIN_EPOCHS = 100
         self.TRAIN_CKPT = ''
         self.TRAIN_LOG_DIR = os.path.join(self.WORK_DIR, 'tf_logs')

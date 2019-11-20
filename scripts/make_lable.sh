@@ -9,13 +9,22 @@
 #dist='/data/workspace/speed-limit-src/dist_val.txt'
 
 
-## TODO:speed-limit-crop
-srcpath='/data/workspace/speed-limit-crop/p38_5/'
-dstpath=None
-txtfile='/data/workspace/speed-limit-crop/test.txt'
-cpath='/data/workspace/speed-limit/speedlimit.label'
-jsonfile='/data/workspace/speed-limit-crop/test.json'
-dist='/data/workspace/speed-limit-crop/dist_test.txt'
+### TODO:speed-limit-crop
+#srcpath='/data/workspace/speed-limit-crop/p38_120/'
+#dstpath='/data/workspace/speed-limit-crop/'
+#txtfile='/data/workspace/speed-limit-crop/test.txt'
+#cpath='/data/workspace/speed-limit/speedlimit.label'
+#jsonfile='/data/workspace/speed-limit-crop/test.json'
+#dist='/data/workspace/speed-limit-crop/dist_test.txt'
+
+## TODO:speed-limit-mixed-1
+srcpath='/data/workspace/speed-limit-mixed-1/Images/unknown3/'
+dstpath='/data/workspace/speed-limit-mixed-1/'
+
+txtfile='/data/workspace/speed-limit-mixed-1/test.txt'
+cpath='/data/workspace/speed-limit-mixed-1/speedlimit.label'
+jsonfile='/data/workspace/speed-limit-mixed-1/test.json'
+dist='/data/workspace/speed-limit-mixed-1/dist_test.txt'
 
 script_path=$(cd "$(dirname "$0")"; pwd)
 python $script_path/../tools/make_label.py $srcpath $dstpath $txtfile $cpath $jsonfile $dist

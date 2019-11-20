@@ -17,6 +17,7 @@ class speedlimit(Dataset):
         else:
             self.img_file = cfg.TEST_SET + '.txt'
             self.ann_file = cfg.TEST_SET + '.json'
+
         with open(self.img_file, 'r') as fsets:
             self.name_list = list(map(lambda x: x.strip(), fsets.readlines()))
 
@@ -24,6 +25,10 @@ class speedlimit(Dataset):
             data = json.load(f)
             self.images = data['images']
             self.annotations = data['annotations']
+            # if args.period == 'trainval':
+            #     self.images = self.images * 2
+            #     self.annotations = self.annotations * 2
+
 
     def __len__(self):
         return len(self.images)
